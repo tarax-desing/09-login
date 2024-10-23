@@ -39,5 +39,24 @@ public function registrarUsuario($email, $password, $verificado = 0){
         return["success"=> false,"message" => "Error en el registro:" .$stmt->error];
     }
 }
+public function verificarToken($token){
+    $sql ="SELECT id FROM usuarios WHERE token = ? AND verificado = 0";
+    $stmt = $this->conn->prepare($sql);
+    $stmt ->bind_param("s", $token);
+    $stmt->execute();
+    $result = $stmt->get_result()
+;
+if($result->num_rows === 1){
+    $row = $result->fetch_assoc();
+    $user_id = $row['id'];
+    $update_sql = "UPDATE usuarios SET  verificado = 1, token= NULL WHERE id= ?";
+    $update_stmt = $this->conn->prepare($update_sql);
+    $update_stmt->bind_param("i", $user_id);
+    $resultado = ["success"=> 'error', "message"=> "hubo un error al verificar tu cuenta. Por favor, intenta de nuevo más tarde"];
 
+   
+if($update_stmt->execute()){
+    $resultado = ["success"=> 'success', "message"=>"Tu cuenta ha sido verificada. INICIA SESIÓN."];
 }
+return $resultado;
+}}}
