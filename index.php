@@ -1,5 +1,6 @@
 <?php
 session_start();
+// var_dump($_SESSION);
 if(isset($_SESSION['success']) && isset($_SESSION['message'])){
     $mensaje = $_SESSION['message'];
     $success = $_SESSION['success'];
